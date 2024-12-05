@@ -27,7 +27,7 @@ int main(){
                 scanf("%d", &n);
 
                 for(i=1; i<=n; i++){
-                    printf("\nId do vertice %d: ", i);
+                    printf("\nId do vertice %d: ", g->qtd_vertices+1);
                     scanf("%d", &id);
 
                     inserirVertice(g, id);
@@ -77,41 +77,6 @@ int main(){
                 break;
         }
     }
-
-   /*inserir_vertice(g, 0);
-    inserir_vertice(g, 1);
-    inserir_vertice(g, 2);
-    inserir_vertice(g, 3);
-    inserir_vertice(g, 4);
-
-    inserir_aresta(g, 0, 2);
-    inserir_aresta(g, 0, 1);
-
-    inserir_aresta(g, 1, 3);
-    inserir_aresta(g, 1, 2);
-    inserir_aresta(g, 1, 0);
-
-    inserir_aresta(g, 2, 4);
-    inserir_aresta(g, 2, 3);
-    inserir_aresta(g, 2, 1);
-    inserir_aresta(g, 2, 0);
-
-    inserir_aresta(g, 3, 4);
-    inserir_aresta(g, 3, 2);
-    inserir_aresta(g, 3, 1);
-
-    inserir_aresta(g, 4, 3);
-    inserir_aresta(g, 4, 2);
-
-    imprimirGrafo(g);
-
-    removerAresta(g, 1, 0);
-
-    imprimirGrafo(g);
-
-    removerVertice(g, 2);
-
-    imprimirGrafo(g);*/
 
     return 0;
 }
