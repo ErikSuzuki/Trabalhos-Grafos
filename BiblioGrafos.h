@@ -168,10 +168,8 @@ void removerAresta(Grafo *gf, int vAnt, int vProx){
     while(vAtual2!=NULL && vAtual2->idv!=vProx)
         vAtual2 = vAtual2->proximo;
     
-    if(vAtual2==NULL){
-        printf("Vertice %d nao encontrado\n", vProx);
+    if(vAtual2==NULL)
         return;
-    }
 
     tipo_elemento *eAtual2 = vAtual2->inicio;
     tipo_elemento *eAnterior2 = NULL;
@@ -180,11 +178,9 @@ void removerAresta(Grafo *gf, int vAnt, int vProx){
         eAtual2 = eAtual2->proximo;
     }
 
-    if(eAtual2==NULL){
-        printf("Aresta de %d para %d nao encontrada\n", vProx, vAnt);
+    if(eAtual2==NULL)
         return;
-    }
-
+    
     if(eAnterior2==NULL)
         vAtual2->inicio=eAtual2->proximo;
     else
@@ -220,10 +216,9 @@ void removerVertice(Grafo *gf, int id){
 
     if(vAnterior==NULL)
         gf->inicio = vAtual->proximo;
-    else{
+    else
         vAnterior->proximo = vAtual->proximo;
-    }
-
+    
     free(vAtual);
 
     tipo_vertice *auxV = gf->inicio;
