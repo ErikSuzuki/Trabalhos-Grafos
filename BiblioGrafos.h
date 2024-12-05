@@ -114,6 +114,7 @@ void imprimirGrafo(Grafo *me){
     }
     tipo_vertice *v = me->inicio;
 
+    printf("\n");
     while(v!=NULL){
         printf("%d ", v->idv);
 
@@ -150,7 +151,7 @@ void removerAresta(Grafo *gf, int vAnt, int vProx){
     }
 
     if(eAtual==NULL){
-        printf("Aresta nao encontrada\n");
+        printf("Aresta de %d para %d nao encontrada\n", vAnt, vProx);
         return;
     }
 
@@ -161,6 +162,36 @@ void removerAresta(Grafo *gf, int vAnt, int vProx){
 
     free(eAtual);
     printf("Aresta de %d para %d removida com sucesso\n", vAnt, vProx);
+
+
+    tipo_vertice *vAtual2 = gf->inicio;
+    while(vAtual2!=NULL && vAtual2->idv!=vProx)
+        vAtual2 = vAtual2->proximo;
+    
+    if(vAtual2==NULL){
+        printf("Vertice %d nao encontrado\n", vProx);
+        return;
+    }
+
+    tipo_elemento *eAtual2 = vAtual2->inicio;
+    tipo_elemento *eAnterior2 = NULL;
+    while(eAtual2!=NULL && eAtual2->id_Adj!=vAnt){
+        eAnterior2 = eAtual2;
+        eAtual2 = eAtual2->proximo;
+    }
+
+    if(eAtual2==NULL){
+        printf("Aresta de %d para %d nao encontrada\n", vProx, vAnt);
+        return;
+    }
+
+    if(eAnterior2==NULL)
+        vAtual2->inicio=eAtual2->proximo;
+    else
+        eAnterior2->proximo = eAtual2->proximo;
+
+    free(eAtual2);
+    printf("Aresta de %d para %d removida com sucesso\n", vProx, vAnt);
 }
 
 
