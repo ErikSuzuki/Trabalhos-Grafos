@@ -7,19 +7,23 @@ int main(){
 
     int op=0;
 
-    while(op!=6){
+    while(op!=9){
         printf("\nEscolha uma das opcoes: \n");
         printf("1 - Inserir Vertice\n");
         printf("2 - Inserir Aresta\n");
         printf("3 - Visualizar grafo\n");
         printf("4 - Remover Vertice\n");
         printf("5 - Remover Aresta\n");
-        printf("6 - Sair\n");
+        printf("6 - Informar grau de um vertice\n");
+        printf("7 - Informar se o grafo eh conexo\n");
+        printf("8 - Converter grado para Matriz de Adjacencia\n");
+        printf("9 - Sair\n");
         printf("Opcao: ");
         scanf("%d", &op);
 
         int n, i;
         int id, ant, prox;
+        int vGrau;
 
         switch(op){
             case 1:
@@ -67,8 +71,27 @@ int main(){
                 removerAresta(g, ant, prox);
 
                 break;
+
+            case 6:
+                printf("\nId do vertice que deseja consultar o grau: ");
+                scanf("%d", &vGrau);
+
+                grauVertice(g, vGrau);
+
+                break;
+
+            case 7:
+                ehConexo(g);
+
+                break;
+
+            case 8:
+                matAdjacencia(g);
+
+                break;
             
-            case 6: 
+            case 9: 
+                free(g);
                 printf("Encerrando o Programa\n");
                 break;
 
