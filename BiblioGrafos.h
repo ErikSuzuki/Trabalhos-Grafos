@@ -1,15 +1,16 @@
 #include<stdlib.h>
 #include<stdio.h>
+#include "BiblioMat.h"
 
-typedef struct tipo_elemento{
+typedef struct tipo_adjacente{
     int id_Adj;
-    struct tipo_elemento *proximo;
-}tipo_elemento;
+    struct tipo_adjacente *proximo;
+}tipo_adjacente;
 
 typedef struct tipo_vertice{
     int idv;
     struct tipo_vertice *proximo;
-    struct tipo_elemento *inicio;
+    struct tipo_adjacente *inicio;
 }tipo_vertice;
 
 typedef struct Grafo{
@@ -90,7 +91,7 @@ void inserirAresta(Grafo *me, int vAnt, int vProx){
         return;
     }
 
-    tipo_elemento *eAtual = atual->inicio;
+    tipo_adjacente *eAtual = atual->inicio;
     while (eAtual != NULL) {
         if (eAtual->id_Adj == vProx) {
             printf("Aresta de %d para %d ja existe\n", vAnt, vProx);
@@ -99,10 +100,20 @@ void inserirAresta(Grafo *me, int vAnt, int vProx){
         eAtual = eAtual->proximo;
     }
 
-    tipo_elemento *novaAresta = (tipo_elemento*) calloc(1, sizeof(tipo_elemento));
+    tipo_adjacente *novaAresta = (tipo_adjacente*) calloc(1, sizeof(tipo_adjacente));
     novaAresta->id_Adj = vProx;
     novaAresta->proximo = atual->inicio;
     atual->inicio = novaAresta;
+
+    tipo_vertice *atual2 = me->inicio;
+    while(atual2!=NULL && atual2->idv!=vProx)
+        atual2 = atual2->proximo;
+
+    tipo_adjacente *novaAresta2 = (tipo_adjacente*) calloc(1, sizeof(tipo_adjacente));
+    novaAresta2->id_Adj = vAnt;
+    novaAresta2->proximo = atual2->inicio;
+    atual2->inicio = novaAresta2;
+
 
     printf("Aresta de %d para %d inserida com sucesso\n", vAnt, vProx);
 }
@@ -118,7 +129,7 @@ void imprimirGrafo(Grafo *me){
     while(v!=NULL){
         printf("%d ", v->idv);
 
-        tipo_elemento *e = v->inicio;
+        tipo_adjacente *e = v->inicio;
         while(e!=NULL){
             printf("-> %d ", e->id_Adj);
             e = e->proximo;
@@ -143,8 +154,8 @@ void removerAresta(Grafo *gf, int vAnt, int vProx){
         return;
     }
 
-    tipo_elemento *eAtual = vAtual->inicio;
-    tipo_elemento *eAnterior = NULL;
+    tipo_adjacente *eAtual = vAtual->inicio;
+    tipo_adjacente *eAnterior = NULL;
     while(eAtual!=NULL && eAtual->id_Adj!=vProx){
         eAnterior = eAtual;
         eAtual = eAtual->proximo;
@@ -171,8 +182,8 @@ void removerAresta(Grafo *gf, int vAnt, int vProx){
     if(vAtual2==NULL)
         return;
 
-    tipo_elemento *eAtual2 = vAtual2->inicio;
-    tipo_elemento *eAnterior2 = NULL;
+    tipo_adjacente *eAtual2 = vAtual2->inicio;
+    tipo_adjacente *eAnterior2 = NULL;
     while(eAtual2!=NULL && eAtual2->id_Adj!=vAnt){
         eAnterior2 = eAtual2;
         eAtual2 = eAtual2->proximo;
@@ -191,7 +202,6 @@ void removerAresta(Grafo *gf, int vAnt, int vProx){
 }
 
 
-//rever esse lixo
 void removerVertice(Grafo *gf, int id){
     if(gf == NULL){
         printf("\nGrafo Vazio");
@@ -223,7 +233,7 @@ void removerVertice(Grafo *gf, int id){
 
     tipo_vertice *auxV = gf->inicio;
     while(auxV!=NULL){
-        tipo_elemento *auxE = auxV->inicio;
+        tipo_adjacente *auxE = auxV->inicio;
 
         while(auxE!=NULL){
             if(auxE->id_Adj==id){
@@ -237,4 +247,102 @@ void removerVertice(Grafo *gf, int id){
 
     gf->qtd_vertices--;
     printf("Vertice %d removido com sucesso\n", id);
+}
+
+void grauVertice(Grafo *g, int v){
+    if(g == NULL){
+        printf("\nGrafo Vazio");
+        return;
+    }
+
+    tipo_vertice *vAtual = g->inicio;
+    while(vAtual!=NULL && vAtual->idv!=v)
+        vAtual = vAtual->proximo;
+
+    if(vAtual==NULL){
+        printf("Vertice %d nao existe\n", v);
+        return;
+    }
+
+    int grau=0;
+    tipo_adjacente *vAdj = vAtual->inicio;
+    while(vAdj!=NULL){
+        grau++;
+        vAdj = vAdj->proximo;
+    }
+
+    printf("\nGrau do vertice %d eh %d\n", v, grau);
+}
+
+void buscaProf(tipo_vertice *v, int *visitado){
+    visitado[v->idv] = 1;
+    tipo_adjacente *e = v->inicio;
+
+    while(e!=NULL){
+        if(!visitado[e->id_Adj]){
+            tipo_vertice *vizinho = v;
+
+            while(vizinho!=NULL && vizinho->idv!=e->id_Adj)
+                vizinho = vizinho->proximo;
+
+            if(vizinho!=NULL)
+                buscaProf(vizinho, visitado);
+        }
+        e = e->proximo;
+    }
+}
+
+int ehConexo(Grafo *gf){
+    if(gf==NULL || gf->inicio == NULL){
+        printf("Grafo Vazio\n");
+        return 0;
+    }
+    
+    int visitado[gf->qtd_vertices];
+    for (int i=0; i<gf->qtd_vertices; i++)
+        visitado[i] = 0;
+    
+    buscaProf(gf->inicio, visitado);
+    
+    tipo_vertice *v = gf->inicio;
+    while(v!=NULL){
+        if(!visitado[v->idv]){
+            printf("\nO grafo nao eh conexo\n");
+            return 0;
+        }
+        v = v->proximo;
+    }
+    printf("\nO grafo eh conexo\n");
+    return 1;
+}
+
+void matAdjacencia(Grafo *gf){
+    if(gf == NULL){
+        printf("\nGrafo Vazio");
+        return;
+    }
+
+    MatEsp *mat = criarMatEsp();
+    mat->qtd_colunas = gf->qtd_vertices;
+    mat->qtd_linhas = gf->qtd_vertices;
+
+    tipo_vertice *v = gf->inicio;
+
+    while(v!=NULL){
+        tipo_adjacente *adj = v->inicio;
+
+        while(adj!=NULL){
+            for(int i=0; i<gf->qtd_vertices; i++){
+                if(adj->id_Adj == i){
+                    inserir(mat, v->idv, i, 1);
+                }
+            }
+
+            adj = adj->proximo;
+        }
+        
+        v = v->proximo;
+    }
+
+    imprimirMat(mat);
 }
